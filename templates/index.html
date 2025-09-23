@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Новости (WebSocket)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; background: #f6f7f9; }
+    h1 { margin: 0 0 12px; }
+    #toolbar { margin: 0 0 16px; display: flex; gap: 8px; }
+    #news { padding: 10px; background: #fff; border: 1px solid #ddd; max-width: 720px; }
+    .item { padding: 8px 6px; border-bottom: 1px dashed #e5e7eb; }
+    .muted { color: #6b7280; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1>📢 Новости</h1>
+  <div id="toolbar">
+    <button id="pingBtn">Проверить соединение (ping)</button>
+    <span id="status" class="muted">Подключение…</span>
+  </div>
+  <div id="news"></div>
+
+  <script>
+    const newsDiv = document.getElementById("news");
+    const statusEl = document.getElementById("status");
+    const ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + "/ws");
+
+    ws.onopen = () => {
+      statusEl.textContent = "✅ Соединение установлено";
+      // периодический ping раз в 10 секунд
+      setInterval(() => ws.readyState === WebSocket.OPEN && ws.send("ping"), 10000);
+    };
+
+    ws.onmessage = (event) => {
+      const msg = event.data;
+      if (msg === "pong") {
+        statusEl.textContent = "💓 Ответ на ping получен";
+        setTimeout(() => statusEl.textContent = "✅ Соединение установлено", 1500);
+        return;
+      }
+      const div = document.createElement("div");
+      div.className = "item";
+      div.textContent = msg;
+      newsDiv.prepend(div);
+    };
+
+    ws.onclose = () => { statusEl.textContent = "❌ Соединение закрыто"; };
+    ws.onerror = () => { statusEl.textContent = "⚠️ Ошибка соединения"; };
+
+    document.getElementById("pingBtn").onclick = () => {
+      if (ws.readyState === WebSocket.OPEN) ws.send("ping");
+    };
+  </script>
+</body>
+</html>
