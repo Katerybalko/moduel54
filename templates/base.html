@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}MMO Board{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/mvp.css">
+</head>
+<body>
+  {% include "includes/_nav.html" %}
+  <main style="max-width: 960px; margin: 20px auto;">
+    {% for m in messages %}<div><em>{{ m }}</em></div>{% endfor %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

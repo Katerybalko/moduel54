@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Войти{% endblock %}
+{% block content %}
+<h2>Вход по e-mail (шаг 1)</h2>
+<form method="post">{% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Отправить код</button>
+</form>
+{% endblock %}

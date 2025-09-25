@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+<h2>{{ post.title }}</h2>
+<p><em>{{ post.get_category_display }} — {{ post.author.username }} — {{ post.created_at|date:"d.m.Y H:i" }}</em></p>
+<div>{{ post.content|safe }}</div>
+
+{% if user.is_authenticated and user.id != post.author_id %}
+<hr>
+<h3>Оставить отклик</h3>
+<form method="post" action="{% url 'board:reply_create' post.pk %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Отправить</button>
+</form>
+{% endif %}
+
+{% if show_replies %}
+<hr>
+<h3>Отклики на ваше объявление</h3>
+<form method="get">
+  <label>Статус:
+    <select name="status" onchange="this.form.submit()">
+      <option value="">— все —</option>
+      <option value="pending">Ожидает</option>
+      <option value="accepted">Принят</option>
+      <option value="declined">Отклонён</option>
+    </select>
+  </label>
+</form>
+
+<ul>
+  {% for r in replies %}
+  <li>
+    <div><strong>{{ r.author.username }}</strong> — {{ r.created_at|date:"d.m.Y H:i" }}</div>
+    <div>{{ r.text|linebreaksbr }}</div>
+    <div>Статус: {{ r.get_status_display }}</div>
+  </li>
+  {% empty %}
+  <li>Откликов нет.</li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}

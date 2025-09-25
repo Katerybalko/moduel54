@@ -1,0 +1,15 @@
+<header style="background:#0067A3; color:#fff; padding:10px 0;">
+  <nav style="max-width:960px; margin:0 auto; display:flex; gap:16px; align-items:center;">
+    <a href="{% url 'board:post_list' %}" style="color:#fff; text-decoration:none; font-weight:600;">MMO Board</a>
+    <a href="{% url 'board:post_create' %}" style="color:#fff;">Новое объявление</a>
+    <a href="{% url 'board:my_replies' %}" style="color:#fff;">Отклики на мои объявления</a>
+    <span style="margin-left:auto">
+      {% if request.user.is_authenticated %}
+        {{ request.user.username }} |
+        <a href="{% url 'accounts:logout' %}" style="color:#fff;">Выйти</a>
+      {% else %}
+        <a href="{% url 'accounts:login' %}" style="color:#fff;">Войти</a>
+      {% endif %}
+    </span>
+  </nav>
+</header>

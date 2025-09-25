@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Объявления{% endblock %}
+{% block content %}
+<h2>Объявления</h2>
+
+<form method="get" style="margin:10px 0;">
+  <label>Категория:
+    <select name="category" onchange="this.form.submit()">
+      <option value="">— все —</option>
+      {% for val,label in categories %}
+        <option value="{{ val }}" {% if selected == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </label>
+</form>
+
+<ul>
+{% for p in posts %}
+  <li>
+    <a href="{% url 'board:post_detail' p.pk %}"><strong>{{ p.title }}</strong></a>
+    — {{ p.get_category_display }} — {{ p.author.username }} — {{ p.created_at|date:"d.m.Y H:i" }}
+  </li>
+{% empty %}
+  <li>Пока нет объявлений.</li>
+{% endfor %}
+</ul>
+
+{% endblock %}
